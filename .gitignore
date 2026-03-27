@@ -1,0 +1,24 @@
+# 1. Python Virtual Environment (The massive folder)
+venv/
+env/
+
+# 2. Python Cache (Compiled background files)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 3. PyCharm / IDE Settings
+.idea/
+.vscode/
+
+# 4. OS System Files
+.DS_Store
+Thumbs.db
+
+# 5. Data Files (Optional, but good practice)
+*.csv
+*.zip
+
+# NOTE: We are allowing lightgbm_fraud_model.pkl to pass through
+# because Render needs our 31KB model to run the API!
