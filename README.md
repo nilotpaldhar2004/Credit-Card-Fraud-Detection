@@ -133,5 +133,5 @@ Evaluates a 30-feature transaction for fraud detection.
 ## 👨‍💻 Author
 
 **Nilotpal Dhar**  
-Computer Science & Business Systems Student (AOT)  
+Computer Science Student (AOT)  
 Specializing in Machine Learning, Model Deployment, and API Development
