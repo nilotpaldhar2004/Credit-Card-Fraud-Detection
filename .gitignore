@@ -1,24 +1,33 @@
-# 1. Python Virtual Environment (The massive folder)
+# 1. Python Virtual Environment
 venv/
 env/
 
-# 2. Python Cache (Compiled background files)
+# 2. Python Cache & Compiled Files
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# 3. PyCharm / IDE Settings
+# 3. Jupyter Notebooks
+.ipynb_checkpoints/
+
+# 4. Environment Variables & Secrets (CRITICAL)
+.env
+.env.local
+.secret
+
+# 5. PyCharm / VS Code IDE Settings
 .idea/
 .vscode/
 
-# 4. OS System Files
+# 6. OS System Files
 .DS_Store
 Thumbs.db
 
-# 5. Data Files (Optional, but good practice)
+# 7. Data Files & Logs
 *.csv
 *.zip
+*.log
 
-# NOTE: We are allowing lightgbm_fraud_model.pkl to pass through
-# because Render needs our 31KB model to run the API!
+# NOTE: We are intentionally allowing lightgbm_fraud_model.pkl
+# to pass through because Render needs our 31KB model to run the API!
