@@ -6,32 +6,40 @@
   <title>FinSec Shield — Fraud Intelligence</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Oxanium:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
     /* ── Design Tokens ─────────────────────────────────────── */
     :root {
-      --bg:          #080c10;
-      --surface-1:   #0d1117;
-      --surface-2:   #161b22;
-      --surface-3:   #21262d;
-      --border:      rgba(48, 54, 61, 0.8);
-      --border-glow: rgba(0, 210, 130, 0.25);
+      --bg:          #06090d;
+      --surface-1:   #0b0f14;
+      --surface-2:   #111720;
+      --surface-3:   #1a2130;
+      --border:      rgba(40, 55, 72, 0.9);
+      --border-glow: rgba(0, 220, 140, 0.3);
+      --border-glow2:rgba(0, 180, 255, 0.25);
 
-      --accent:      #00d282;
-      --accent-dim:  rgba(0, 210, 130, 0.12);
-      --danger:      #ff4757;
-      --danger-dim:  rgba(255, 71, 87, 0.12);
-      --warn:        #ffa502;
-      --muted:       #484f58;
-      --text:        #e6edf3;
-      --text-2:      #8b949e;
-      --text-3:      #484f58;
+      --accent:      #00dc8c;
+      --accent-dim:  rgba(0, 220, 140, 0.10);
+      --accent2:     #00b4ff;
+      --accent2-dim: rgba(0, 180, 255, 0.10);
+      --danger:      #ff3d57;
+      --danger-dim:  rgba(255, 61, 87, 0.10);
+      --warn:        #ffab00;
+      --muted:       #3e5068;
+      --text:        #dde8f0;
+      --text-2:      #7a91a8;
+      --text-3:      #3e5068;
 
       --font-mono:   'JetBrains Mono', monospace;
-      --font-ui:     'Syne', sans-serif;
-      --radius:      6px;
-      --transition:  200ms cubic-bezier(0.4, 0, 0.2, 1);
+      --font-ui:     'Oxanium', sans-serif;
+      --font-body:   'Space Grotesk', sans-serif;
+      --radius:      8px;
+      --radius-lg:   12px;
+      --transition:  180ms cubic-bezier(0.4, 0, 0.2, 1);
+
+      --sidebar-w:   240px;
+      --topbar-h:    58px;
     }
 
     /* ── Reset ─────────────────────────────────────────────── */
@@ -43,165 +51,263 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      display: flex;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
-    /* Ambient grid */
+    /* Ambient noise texture */
     body::before {
       content: '';
       position: fixed; inset: 0;
       background-image:
-        linear-gradient(rgba(0,210,130,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,210,130,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
+        radial-gradient(ellipse 80% 50% at 20% 0%, rgba(0,220,140,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(0,180,255,0.04) 0%, transparent 60%),
+        linear-gradient(rgba(0,220,140,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,220,140,0.025) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
       pointer-events: none;
       z-index: 0;
     }
 
-    /* ── Sidebar ───────────────────────────────────────────── */
-    .sidebar {
-      position: relative;
-      z-index: 10;
-      width: 220px;
-      flex-shrink: 0;
-      background: var(--surface-1);
-      border-right: 1px solid var(--border);
+    /* ── Layout Shell ───────────────────────────────────────── */
+    .app {
       display: flex;
-      flex-direction: column;
-      padding: 24px 0;
-      height: 100vh;
+      flex-direction: row;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
     }
 
-    .logo {
-      padding: 0 20px 24px;
+    /* ── Mobile Header ──────────────────────────────────────── */
+    .mobile-header {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--topbar-h);
+      background: var(--surface-1);
       border-bottom: 1px solid var(--border);
-      margin-bottom: 16px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      z-index: 100;
     }
-    .logo-mark {
+    .mobile-logo {
       font-family: var(--font-ui);
-      font-size: 15px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
+      font-size: 16px;
+      font-weight: 700;
       color: var(--text);
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .logo-mark .shield {
-      width: 28px; height: 28px;
+    .mobile-logo .shield-icon {
+      width: 30px; height: 30px;
       background: var(--accent-dim);
       border: 1px solid var(--border-glow);
-      border-radius: 6px;
+      border-radius: 7px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
+      font-size: 15px;
     }
-    .logo-sub {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-top: 4px;
+    .hamburger {
+      width: 36px; height: 36px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 5px;
+      padding: 9px;
+      transition: border-color var(--transition);
+    }
+    .hamburger:hover { border-color: var(--border-glow); }
+    .hamburger span {
+      width: 100%; height: 1.5px;
+      background: var(--text-2);
+      border-radius: 2px;
+      transition: all var(--transition);
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* Overlay */
+    .overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(6,9,13,0.7);
+      z-index: 49;
+      backdrop-filter: blur(2px);
+    }
+    .overlay.visible { display: block; }
+
+    /* ── Sidebar ───────────────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: var(--surface-1);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 28px 0 20px;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      transition: transform var(--transition);
     }
 
-    .nav { display: flex; flex-direction: column; gap: 2px; padding: 0 12px; flex: 1; }
+    .logo {
+      padding: 0 22px 22px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+    .logo-mark {
+      font-family: var(--font-ui);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-mark .shield {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, rgba(0,220,140,0.18), rgba(0,180,255,0.1));
+      border: 1px solid var(--border-glow);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 0 16px rgba(0,220,140,0.12);
+    }
+    .logo-sub {
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 5px;
+    }
+
+    .nav { display: flex; flex-direction: column; padding: 0 14px; flex: 1; gap: 2px; }
+
+    .nav-section-label {
+      font-family: var(--font-body);
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      padding: 14px 10px 5px;
+    }
+
     .nav-item {
       display: flex; align-items: center; gap: 10px;
-      padding: 9px 12px;
+      padding: 10px 12px;
       border-radius: var(--radius);
-      font-size: 12px;
+      font-family: var(--font-body);
+      font-size: 13px;
       font-weight: 500;
       color: var(--text-2);
       cursor: pointer;
-      transition: background var(--transition), color var(--transition);
-      letter-spacing: 0.02em;
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+      letter-spacing: 0.01em;
       text-decoration: none;
+      border: 1px solid transparent;
+      position: relative;
     }
-    .nav-item:hover { background: var(--surface-2); color: var(--text); }
-    .nav-item.active { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--border-glow); }
-    .nav-item .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
-    }
-    .nav-section-label {
-      font-size: 9px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-3);
-      padding: 12px 12px 4px;
-    }
-
-    .sidebar-footer {
-      padding: 16px 20px 0;
-      border-top: 1px solid var(--border);
-    }
-    .version-tag {
-      font-size: 10px;
-      color: var(--text-3);
-      letter-spacing: 0.08em;
-    }
-    .status-indicator {
-      display: flex; align-items: center; gap: 6px;
-      margin-top: 6px; font-size: 11px; color: var(--text-2);
-    }
-    .pulse {
+    .nav-item .nav-dot {
       width: 7px; height: 7px;
       border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 0 0 rgba(0,210,130,0.6);
-      animation: pulse-ring 2s ease-out infinite;
+      flex-shrink: 0;
+      box-shadow: 0 0 8px rgba(0,220,140,0.6);
+    }
+    .nav-item.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-color: var(--border-glow);
+    }
+
+    .sidebar-footer {
+      padding: 16px 22px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+    }
+    .version-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+    }
+    .status-indicator {
+      display: flex; align-items: center; gap: 7px;
+      margin-top: 7px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-2);
+    }
+    .pulse {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(0,220,140,0.6);
+      animation: pulse-ring 2.2s ease-out infinite;
+      flex-shrink: 0;
     }
     @keyframes pulse-ring {
-      0%   { box-shadow: 0 0 0 0   rgba(0,210,130,0.6); }
-      70%  { box-shadow: 0 0 0 6px rgba(0,210,130,0); }
-      100% { box-shadow: 0 0 0 0   rgba(0,210,130,0); }
+      0%   { box-shadow: 0 0 0 0   rgba(0,220,140,0.7); }
+      70%  { box-shadow: 0 0 0 7px rgba(0,220,140,0); }
+      100% { box-shadow: 0 0 0 0   rgba(0,220,140,0); }
     }
 
     /* ── Main ──────────────────────────────────────────────── */
     .main {
-      position: relative;
-      z-index: 5;
       flex: 1;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
+      min-width: 0;
+      position: relative;
+      z-index: 5;
     }
 
-    /* Top bar */
+    /* Topbar */
     .topbar {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 32px;
+      padding: 0 28px;
+      height: var(--topbar-h);
       border-bottom: 1px solid var(--border);
-      background: var(--surface-1);
+      background: rgba(11, 15, 20, 0.85);
+      backdrop-filter: blur(12px);
       flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    .topbar-left { display: flex; align-items: center; gap: 8px; }
+    .topbar-left { display: flex; align-items: center; gap: 10px; }
     .breadcrumb {
       font-family: var(--font-mono);
       font-size: 12px;
       color: var(--text-2);
     }
     .breadcrumb span { color: var(--accent); }
-    .topbar-badges { display: flex; gap: 8px; }
+    .topbar-badges { display: flex; gap: 8px; align-items: center; }
     .badge {
+      font-family: var(--font-body);
       font-size: 10px;
-      letter-spacing: 0.08em;
-      padding: 3px 8px;
-      border-radius: 3px;
+      letter-spacing: 0.1em;
+      padding: 4px 10px;
+      border-radius: 4px;
       font-weight: 600;
       text-transform: uppercase;
     }
     .badge-green { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--border-glow); }
     .badge-gray  { background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); }
 
-    /* Content */
+    /* ── Content ───────────────────────────────────────────── */
     .content {
       flex: 1;
       overflow-y: auto;
-      padding: 28px 32px;
+      padding: 24px 28px 36px;
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -209,7 +315,7 @@
       scrollbar-color: var(--surface-3) transparent;
     }
 
-    /* Metric row */
+    /* ── Metric Strip ──────────────────────────────────────── */
     .metric-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -218,42 +324,81 @@
     .metric-card {
       background: var(--surface-1);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px 18px;
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
       position: relative;
       overflow: hidden;
-      animation: slide-up 0.4s ease both;
+      animation: slide-up 0.45s ease both;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .metric-card:hover {
+      border-color: rgba(0,220,140,0.2);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
     }
     .metric-card::before {
       content: '';
       position: absolute; top: 0; left: 0; right: 0;
       height: 2px;
+      border-radius: 12px 12px 0 0;
     }
-    .metric-card.green::before { background: var(--accent); }
-    .metric-card.red::before   { background: var(--danger); }
-    .metric-card.blue::before  { background: #58a6ff; }
-    .metric-card.orange::before{ background: var(--warn); }
+    .metric-card.green::before  { background: linear-gradient(90deg, var(--accent), transparent); }
+    .metric-card.blue::before   { background: linear-gradient(90deg, var(--accent2), transparent); }
+    .metric-card.orange::before { background: linear-gradient(90deg, var(--warn), transparent); }
+    .metric-card.red::before    { background: linear-gradient(90deg, var(--danger), transparent); }
+    .metric-card::after {
+      content: '';
+      position: absolute;
+      right: -20px; bottom: -20px;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      opacity: 0.04;
+    }
+    .metric-card.green::after  { background: var(--accent); }
+    .metric-card.blue::after   { background: var(--accent2); }
+    .metric-card.orange::after { background: var(--warn); }
+    .metric-card.red::after    { background: var(--danger); }
 
-    .metric-label { font-size: 10px; color: var(--text-3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
-    .metric-value { font-family: var(--font-ui); font-size: 24px; font-weight: 700; color: var(--text); }
-    .metric-sub { font-size: 10px; color: var(--text-3); margin-top: 4px; }
+    .metric-label {
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .metric-value {
+      font-family: var(--font-ui);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+    .metric-sub {
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--text-3);
+      margin-top: 6px;
+    }
 
-    /* Panel row */
+    /* ── Panel Row ─────────────────────────────────────────── */
     .panel-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
-      flex: 1;
     }
 
     .panel {
       background: var(--surface-1);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: var(--radius-lg);
       display: flex;
       flex-direction: column;
       overflow: hidden;
       animation: slide-up 0.5s ease both;
+      transition: border-color var(--transition);
+    }
+    .panel:focus-within {
+      border-color: rgba(0,220,140,0.25);
     }
 
     .panel-header {
@@ -261,96 +406,139 @@
       padding: 14px 20px;
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
+      background: rgba(26, 33, 48, 0.4);
     }
     .panel-title {
       font-family: var(--font-ui);
       font-size: 13px;
       font-weight: 700;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.04em;
       color: var(--text);
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: center; gap: 9px;
     }
-    .panel-title .icon { font-size: 14px; }
+    .panel-title .icon { font-size: 15px; }
     .panel-tag {
       font-family: var(--font-mono);
       font-size: 9px;
       color: var(--text-3);
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
     }
 
-    .panel-body { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+    .panel-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
 
-    /* Meta info */
+    /* ── Meta Grid ─────────────────────────────────────────── */
     .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .meta-item {
       background: var(--surface-2);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 10px 12px;
+      padding: 10px 13px;
+      transition: border-color var(--transition);
     }
-    .meta-key { font-size: 9px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 3px; }
-    .meta-val { font-size: 12px; color: var(--accent); font-weight: 600; }
+    .meta-item:hover { border-color: rgba(0,220,140,0.2); }
+    .meta-key {
+      font-family: var(--font-body);
+      font-size: 9px;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 4px;
+    }
+    .meta-val {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+    }
 
-    /* Textarea */
+    /* ── Textarea ──────────────────────────────────────────── */
     .code-label {
-      font-size: 9px; color: var(--text-3); letter-spacing: 0.12em;
-      text-transform: uppercase; margin-bottom: 6px;
+      font-family: var(--font-body);
+      font-size: 9px;
+      color: var(--text-3);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 7px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .code-label .format-hint { color: var(--muted); }
+    .code-label .format-hint {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+      border-radius: 3px;
+      color: var(--muted);
+    }
 
     textarea {
       width: 100%;
       flex: 1;
-      min-height: 200px;
-      padding: 14px;
+      min-height: 190px;
+      padding: 14px 16px;
       border-radius: var(--radius);
       border: 1px solid var(--border);
       background: var(--bg);
-      color: #7ee787;
+      color: #5fdd9d;
       font-family: var(--font-mono);
-      font-size: 12px;
-      line-height: 1.6;
+      font-size: 11.5px;
+      line-height: 1.75;
       resize: vertical;
       outline: none;
       transition: border-color var(--transition), box-shadow var(--transition);
     }
     textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(0,210,130,0.08);
+      border-color: rgba(0,220,140,0.4);
+      box-shadow: 0 0 0 3px rgba(0,220,140,0.07), inset 0 0 20px rgba(0,220,140,0.02);
     }
 
-    /* CTA Button */
+    /* ── Button ────────────────────────────────────────────── */
     .btn {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 11px 20px;
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      padding: 12px 22px;
       border-radius: var(--radius);
       border: none;
       font-family: var(--font-ui);
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
       cursor: pointer;
       transition: all var(--transition);
       width: 100%;
+      position: relative;
+      overflow: hidden;
     }
-    .btn-primary {
-      background: var(--accent);
-      color: #000;
+    .btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      opacity: 0;
+      transition: opacity var(--transition);
     }
-    .btn-primary:hover { background: #00f59a; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,210,130,0.3); }
-    .btn-primary:active { transform: translateY(0); }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-    .btn-icon { font-size: 15px; }
+    .btn:hover::before { opacity: 1; }
 
-    /* ── Result Panel ───────────────────────────────────────── */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, #00b87a 100%);
+      color: #021a0e;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(0,220,140,0.35), 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .btn-primary:active { transform: translateY(0); box-shadow: none; }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* ── Result Zone ───────────────────────────────────────── */
     .result-zone {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      min-height: 0;
+      gap: 14px;
     }
 
     .result-idle {
@@ -360,36 +548,60 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 10px;
+      gap: 12px;
       color: var(--text-3);
+      padding: 30px 20px;
     }
-    .idle-icon { font-size: 36px; opacity: 0.3; }
-    .idle-text { font-size: 12px; letter-spacing: 0.04em; }
+    .idle-icon {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      opacity: 0.5;
+    }
+    .idle-text {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-3);
+      line-height: 1.6;
+      letter-spacing: 0.01em;
+    }
 
     /* Verdict card */
     .verdict {
       display: none;
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 22px 20px;
       text-align: center;
       animation: slide-up 0.3s ease both;
     }
-    .verdict.approve { background: var(--accent-dim); border: 1px solid var(--border-glow); }
-    .verdict.block   { background: var(--danger-dim); border: 1px solid rgba(255,71,87,0.3); }
-    .verdict.loading { background: var(--surface-2); border: 1px solid var(--border); }
+    .verdict.approve {
+      background: linear-gradient(135deg, rgba(0,220,140,0.08), rgba(0,180,255,0.04));
+      border: 1px solid var(--border-glow);
+    }
+    .verdict.block {
+      background: linear-gradient(135deg, rgba(255,61,87,0.1), rgba(255,100,100,0.04));
+      border: 1px solid rgba(255,61,87,0.3);
+    }
+    .verdict.loading {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+    }
 
-    .verdict-icon { font-size: 32px; margin-bottom: 8px; }
+    .verdict-icon { font-size: 30px; margin-bottom: 8px; line-height: 1; }
     .verdict-label {
       font-family: var(--font-ui);
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
     }
     .approve .verdict-label { color: var(--accent); }
     .block   .verdict-label { color: var(--danger); }
     .loading .verdict-label { color: var(--text-2); }
 
-    /* Score display */
+    /* Score grid */
     .score-grid {
       display: none;
       grid-template-columns: 1fr 1fr 1fr;
@@ -400,24 +612,39 @@
       background: var(--surface-2);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 12px;
+      padding: 13px 10px;
       text-align: center;
+      transition: border-color var(--transition);
     }
-    .score-cell-label { font-size: 9px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
-    .score-cell-val { font-family: var(--font-ui); font-size: 18px; font-weight: 700; }
+    .score-cell-label {
+      font-family: var(--font-body);
+      font-size: 9px;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 7px;
+    }
+    .score-cell-val {
+      font-family: var(--font-ui);
+      font-size: 17px;
+      font-weight: 700;
+    }
 
-    /* Progress bar */
+    /* Prob bar */
     .prob-bar-wrap {
       display: none;
       animation: slide-up 0.35s ease 0.2s both;
     }
     .prob-bar-label {
       display: flex; justify-content: space-between;
-      font-size: 10px; color: var(--text-2);
-      margin-bottom: 6px;
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--text-2);
+      margin-bottom: 7px;
+      letter-spacing: 0.04em;
     }
     .prob-bar-track {
-      height: 6px;
+      height: 5px;
       background: var(--surface-3);
       border-radius: 99px;
       overflow: hidden;
@@ -427,10 +654,10 @@
       border-radius: 99px;
       background: var(--accent);
       width: 0%;
-      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
+      transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
     }
 
-    /* Log */
+    /* Log panel */
     .log-panel {
       display: none;
       background: var(--bg);
@@ -439,131 +666,230 @@
       padding: 12px 14px;
       font-size: 11px;
       color: var(--text-2);
-      line-height: 1.7;
+      line-height: 1.75;
       animation: slide-up 0.35s ease 0.3s both;
-      max-height: 120px;
+      max-height: 110px;
       overflow-y: auto;
+      scrollbar-width: thin;
     }
-    .log-line { display: flex; gap: 8px; }
-    .log-ts { color: var(--text-3); flex-shrink: 0; }
+    .log-line { display: flex; gap: 9px; }
+    .log-ts {
+      font-family: var(--font-mono);
+      color: var(--text-3);
+      flex-shrink: 0;
+      font-size: 10px;
+    }
     .log-msg.ok  { color: var(--accent); }
     .log-msg.err { color: var(--danger); }
     .log-msg.inf { color: var(--text-2); }
 
     /* ── Animations ─────────────────────────────────────────── */
     @keyframes slide-up {
-      from { opacity: 0; transform: translateY(14px); }
+      from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-    .spinning { display: inline-block; animation: spin 1s linear infinite; }
+    .spinning { display: inline-block; animation: spin 0.9s linear infinite; }
 
     /* ── Scrollbar ───────────────────────────────────────────── */
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 3px; }
+
+    /* ══════════════════════════════════════════════════════════
+       RESPONSIVE BREAKPOINTS
+    ══════════════════════════════════════════════════════════ */
+
+    /* ── Tablet ─────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .metric-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .panel-row {
+        grid-template-columns: 1fr;
+      }
+      .panel {
+        min-height: unset;
+      }
+    }
+
+    /* ── Mobile ─────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      :root { --topbar-h: 56px; }
+
+      /* Show mobile header, hide sidebar */
+      .mobile-header { display: flex; }
+      .overlay { display: none; }
+
+      .sidebar {
+        position: fixed;
+        top: 0; left: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        box-shadow: 4px 0 40px rgba(0,0,0,0.5);
+        padding-top: calc(var(--topbar-h) + 16px);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        padding-top: var(--topbar-h);
+      }
+
+      .topbar {
+        display: none;
+      }
+
+      .content {
+        padding: 16px 14px 28px;
+        gap: 14px;
+      }
+
+      .metric-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .metric-card { padding: 14px 14px; }
+      .metric-value { font-size: 18px; }
+      .metric-sub { display: none; }
+
+      .panel-row {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .panel-body { padding: 16px; gap: 12px; }
+
+      .meta-grid { gap: 8px; }
+
+      textarea { min-height: 160px; font-size: 11px; }
+
+      .score-grid { grid-template-columns: 1fr 1fr 1fr; }
+      .score-cell { padding: 10px 6px; }
+      .score-cell-val { font-size: 14px; }
+
+      .topbar-badges .badge-gray { display: none; }
+    }
+
+    /* ── Small Mobile ───────────────────────────────────────── */
+    @media (max-width: 400px) {
+      .metric-row { grid-template-columns: 1fr 1fr; }
+      .metric-value { font-size: 16px; }
+      .score-grid { grid-template-columns: 1fr 1fr; }
+      .score-cell:last-child { grid-column: 1 / -1; }
+    }
   </style>
 </head>
 <body>
 
-<!-- ─── Sidebar ─────────────────────────────────────────────────── -->
-<aside class="sidebar">
-  <div class="logo">
-    <div class="logo-mark"><span class="shield">🛡</span>FinSec Shield</div>
-    <div class="logo-sub">Fraud Intelligence Platform</div>
+<!-- ─── Mobile Header ───────────────────────────────────────────── -->
+<div class="mobile-header">
+  <div class="mobile-logo">
+    <span class="shield-icon">🛡</span>FinSec Shield
   </div>
-
-  <nav class="nav">
-    <div class="nav-section-label">Inference</div>
-    <a class="nav-item active"><span class="dot"></span>Live Scoring</a>
-
-    <div class="nav-section-label">Analytics</div>
-    <a class="nav-item">📊 &nbsp;Model Analytics</a>
-    <a class="nav-item">📈 &nbsp;Trend Reports</a>
-    <a class="nav-item">🔍 &nbsp;Case Explorer</a>
-
-    <div class="nav-section-label">Config</div>
-    <a class="nav-item">⚙️ &nbsp;Thresholds</a>
-    <a class="nav-item">🔑 &nbsp;API Keys</a>
-  </nav>
-
-  <div class="sidebar-footer">
-    <div class="version-tag">LightGBM v3 · API v2.0.0</div>
-    <div class="status-indicator"><span class="pulse"></span>Model online</div>
+  <div class="hamburger" id="hamburger" onclick="toggleSidebar()">
+    <span></span><span></span><span></span>
   </div>
-</aside>
+</div>
 
-<!-- ─── Main ─────────────────────────────────────────────────────── -->
-<main class="main">
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-  <!-- Topbar -->
-  <div class="topbar">
-    <div class="topbar-left">
-      <div class="breadcrumb">inference / <span>live-scoring</span></div>
+<!-- ─── App Shell ────────────────────────────────────────────────── -->
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">
+      <div class="logo-mark"><span class="shield">🛡</span>FinSec Shield</div>
+      <div class="logo-sub">Fraud Intelligence Platform</div>
     </div>
-    <div class="topbar-badges">
-      <span class="badge badge-green">● API LIVE</span>
-      <span class="badge badge-gray">POST /predict</span>
+
+    <nav class="nav">
+      <div class="nav-section-label">Inference</div>
+      <a class="nav-item active" onclick="closeSidebar()">
+        <span class="nav-dot"></span>Live Scoring
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="version-tag">LightGBM v3 · API v2.0.0</div>
+      <div class="status-indicator"><span class="pulse"></span>Model online</div>
     </div>
-  </div>
+  </aside>
 
-  <!-- Scrollable content -->
-  <div class="content">
+  <!-- Main -->
+  <main class="main">
 
-    <!-- Metric strip -->
-    <div class="metric-row">
-      <div class="metric-card green">
-        <div class="metric-label">Model</div>
-        <div class="metric-value">LightGBM</div>
-        <div class="metric-sub">Gradient Boosted Trees</div>
+    <!-- Topbar (desktop only) -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="breadcrumb">inference / <span>live-scoring</span></div>
       </div>
-      <div class="metric-card blue">
-        <div class="metric-label">Features</div>
-        <div class="metric-value">30</div>
-        <div class="metric-sub">Time · V1–V28 · Amount</div>
-      </div>
-      <div class="metric-card orange">
-        <div class="metric-label">Threshold</div>
-        <div class="metric-value">0.50</div>
-        <div class="metric-sub">Configurable via ENV</div>
-      </div>
-      <div class="metric-card red">
-        <div class="metric-label">Endpoint</div>
-        <div class="metric-value" style="font-size:15px; padding-top:4px">POST /predict</div>
-        <div class="metric-sub">REST · JSON</div>
+      <div class="topbar-badges">
+        <span class="badge badge-green">● API LIVE</span>
+        <span class="badge badge-gray">POST /predict</span>
       </div>
     </div>
 
-    <!-- Main panels -->
-    <div class="panel-row">
+    <!-- Content -->
+    <div class="content">
 
-      <!-- Input panel -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title"><span class="icon">📡</span>Incoming Payload</div>
-          <div class="panel-tag">WEBHOOK · RAW JSON</div>
+      <!-- Metric strip -->
+      <div class="metric-row">
+        <div class="metric-card green">
+          <div class="metric-label">Model</div>
+          <div class="metric-value">LightGBM</div>
+          <div class="metric-sub">Gradient Boosted Trees</div>
         </div>
-        <div class="panel-body">
+        <div class="metric-card blue">
+          <div class="metric-label">Features</div>
+          <div class="metric-value">30</div>
+          <div class="metric-sub">Time · V1–V28 · Amount</div>
+        </div>
+        <div class="metric-card orange">
+          <div class="metric-label">Threshold</div>
+          <div class="metric-value">0.50</div>
+          <div class="metric-sub">Configurable via ENV</div>
+        </div>
+        <div class="metric-card red">
+          <div class="metric-label">Endpoint</div>
+          <div class="metric-value" style="font-size:13px;padding-top:4px">POST /predict</div>
+          <div class="metric-sub">REST · JSON</div>
+        </div>
+      </div>
 
-          <div class="meta-grid">
-            <div class="meta-item">
-              <div class="meta-key">Transaction ID</div>
-              <div class="meta-val" id="txnId">TXN-84729-A</div>
-            </div>
-            <div class="meta-item">
-              <div class="meta-key">Merchant Gateway</div>
-              <div class="meta-val">Stripe_POS_04</div>
-            </div>
+      <!-- Panels -->
+      <div class="panel-row">
+
+        <!-- Input -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title"><span class="icon">📡</span>Incoming Payload</div>
+            <div class="panel-tag">WEBHOOK · RAW JSON</div>
           </div>
-
-          <div>
-            <div class="code-label">
-              <span>Feature Vector · V1–V28, Amount, Time</span>
-              <span class="format-hint">application/json</span>
+          <div class="panel-body">
+            <div class="meta-grid">
+              <div class="meta-item">
+                <div class="meta-key">Transaction ID</div>
+                <div class="meta-val" id="txnId">TXN-84729-A</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-key">Merchant Gateway</div>
+                <div class="meta-val">Stripe_POS_04</div>
+              </div>
             </div>
-            <textarea id="payloadData" spellcheck="false">{
+
+            <div>
+              <div class="code-label">
+                <span>Feature Vector · V1–V28, Amount, Time</span>
+                <span class="format-hint">application/json</span>
+              </div>
+              <textarea id="payloadData" spellcheck="false">{
   "Time": 1205.0,
   "V1": -0.8,  "V2": 0.5,   "V3": 1.2,   "V4": 0.1,   "V5": -0.3,
   "V6": 0.0,   "V7": 0.8,   "V8": -0.1,  "V9": 0.4,   "V10": -0.2,
@@ -573,199 +899,242 @@
   "V26": -0.1, "V27": 0.0,  "V28": 0.0,
   "Amount": 250.00
 }</textarea>
+            </div>
+
+            <button class="btn btn-primary" id="submitBtn" onclick="runInference()">
+              <span class="btn-icon">▶</span>Execute Inference
+            </button>
           </div>
-
-          <button class="btn btn-primary" id="submitBtn" onclick="runInference()">
-            <span class="btn-icon">▶</span>Execute Inference
-          </button>
         </div>
-      </div>
 
-      <!-- Output panel -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title"><span class="icon">🤖</span>Decision Output</div>
-          <div class="panel-tag">MODEL RESPONSE</div>
+        <!-- Output -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title"><span class="icon">🤖</span>Decision Output</div>
+            <div class="panel-tag">MODEL RESPONSE</div>
+          </div>
+          <div class="panel-body">
+            <div class="result-zone">
+
+              <div class="result-idle" id="idleState">
+                <div class="idle-icon">⬡</div>
+                <div class="idle-text">Awaiting payload<br>Submit a transaction to score</div>
+              </div>
+
+              <div class="verdict" id="verdictCard">
+                <div class="verdict-icon" id="verdictIcon">—</div>
+                <div class="verdict-label" id="verdictLabel">—</div>
+              </div>
+
+              <div class="score-grid" id="scoreGrid">
+                <div class="score-cell">
+                  <div class="score-cell-label">Fraud Prob</div>
+                  <div class="score-cell-val" id="scoreProb">—</div>
+                </div>
+                <div class="score-cell">
+                  <div class="score-cell-label">Decision</div>
+                  <div class="score-cell-val" id="scoreDecision">—</div>
+                </div>
+                <div class="score-cell">
+                  <div class="score-cell-label">Latency</div>
+                  <div class="score-cell-val" id="scoreLatency">—</div>
+                </div>
+              </div>
+
+              <div class="prob-bar-wrap" id="probBarWrap">
+                <div class="prob-bar-label">
+                  <span>Risk Level</span>
+                  <span id="probPct">0%</span>
+                </div>
+                <div class="prob-bar-track">
+                  <div class="prob-bar-fill" id="probBarFill"></div>
+                </div>
+              </div>
+
+              <div class="log-panel" id="logPanel"></div>
+
+            </div>
+          </div>
         </div>
-        <div class="panel-body">
 
-          <div class="result-zone">
+      </div><!-- end panel-row -->
 
-            <!-- Idle state -->
-            <div class="result-idle" id="idleState">
-              <div class="idle-icon">⬡</div>
-              <div class="idle-text">Awaiting payload<br/>submit a transaction to score</div>
-            </div>
-
-            <!-- Verdict badge -->
-            <div class="verdict" id="verdictCard">
-              <div class="verdict-icon" id="verdictIcon">—</div>
-              <div class="verdict-label" id="verdictLabel">—</div>
-            </div>
-
-            <!-- Score grid -->
-            <div class="score-grid" id="scoreGrid">
-              <div class="score-cell">
-                <div class="score-cell-label">Fraud Prob</div>
-                <div class="score-cell-val" id="scoreProb">—</div>
-              </div>
-              <div class="score-cell">
-                <div class="score-cell-label">Decision</div>
-                <div class="score-cell-val" id="scoreDecision">—</div>
-              </div>
-              <div class="score-cell">
-                <div class="score-cell-label">Latency</div>
-                <div class="score-cell-val" id="scoreLatency">—</div>
-              </div>
-            </div>
-
-            <!-- Probability bar -->
-            <div class="prob-bar-wrap" id="probBarWrap">
-              <div class="prob-bar-label">
-                <span>Risk Level</span>
-                <span id="probPct">0%</span>
-              </div>
-              <div class="prob-bar-track">
-                <div class="prob-bar-fill" id="probBarFill"></div>
-              </div>
-            </div>
-
-            <!-- Log output -->
-            <div class="log-panel" id="logPanel"></div>
-
-          </div><!-- end result-zone -->
-        </div>
-      </div>
-
-    </div><!-- end panel-row -->
-
-  </div><!-- end content -->
-</main>
+    </div><!-- end content -->
+  </main>
+</div><!-- end app -->
 
 <script>
-  // ── Helpers ────────────────────────────────────────────────────
+  // ── Sidebar (mobile) ──────────────────────────────────────────
+  function toggleSidebar() {
+    const sidebar   = document.getElementById('sidebar');
+    const hamburger = document.getElementById('hamburger');
+    const overlay   = document.getElementById('overlay');
+    const open = sidebar.classList.toggle('open');
+    hamburger.classList.toggle('open', open);
+    overlay.classList.toggle('visible', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('overlay').classList.remove('visible');
+    document.body.style.overflow = '';
+  }
+
+  // ── Small helpers ─────────────────────────────────────────────
   function nowTs() {
     return new Date().toLocaleTimeString('en-US', { hour12: false });
   }
 
   let txnCounter = 84729;
-
   function randomTxnId() {
     return `TXN-${++txnCounter}-${String.fromCharCode(65 + Math.floor(Math.random() * 26))}`;
   }
 
   function appendLog(msg, type = 'inf') {
-    const log = document.getElementById('logPanel');
+    const log  = document.getElementById('logPanel');
     const line = document.createElement('div');
     line.className = 'log-line';
-    line.innerHTML = `<span class="log-ts">[${nowTs()}]</span><span class="log-msg ${type}">${msg}</span>`;
+    line.innerHTML =
+      `<span class="log-ts">[${nowTs()}]</span>` +
+      `<span class="log-msg ${type}">${msg}</span>`;
     log.appendChild(line);
     log.scrollTop = log.scrollHeight;
   }
 
-  function showElement(id, display = 'block') {
+  function showEl(id, display = 'block') {
     document.getElementById(id).style.display = display;
   }
-  function hideElement(id) {
+  function hideEl(id) {
     document.getElementById(id).style.display = 'none';
-  }
-
-  // ── Core inference function ───────────────────────────────────
-  async function runInference() {
-    const btn       = document.getElementById('submitBtn');
-    const payload   = document.getElementById('payloadData').value.trim();
-
-    // Parse JSON first
-    let txnData;
-    try {
-      txnData = JSON.parse(payload);
-    } catch {
-      setVerdict('block', '❌', 'INVALID JSON');
-      appendLog('JSON parse error — check syntax', 'err');
-      return;
-    }
-
-    // ── Set loading state
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinning btn-icon">⟳</span>Analyzing…';
-    document.getElementById('txnId').textContent = randomTxnId();
-
-    hideElement('idleState');
-    hideElement('scoreGrid');
-    hideElement('probBarWrap');
-
-    const log = document.getElementById('logPanel');
-    log.innerHTML = '';
-    showElement('logPanel');
-
-    setVerdict('loading', '<span class="spinning">⟳</span>', 'PROCESSING');
-    appendLog('Payload validated · dispatching to inference endpoint', 'inf');
-
-    try {
-      const t0 = performance.now();
-
-      const res = await fetch('/predict', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(txnData),
-      });
-
-      const roundTrip = (performance.now() - t0).toFixed(0);
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({ detail: res.statusText }));
-        throw new Error(err.detail || `HTTP ${res.status}`);
-      }
-
-      const data = await res.json();
-
-      const pct      = (data.fraud_probability * 100).toFixed(2);
-      const isBlock  = data.action === 'BLOCK';
-
-      appendLog(`Response received · RTT ${roundTrip} ms`, 'inf');
-      appendLog(`Probability → ${pct}% · Action → ${data.action}`, isBlock ? 'err' : 'ok');
-
-      // Verdict card
-      setVerdict(
-        isBlock ? 'block' : 'approve',
-        isBlock ? '🚨' : '✅',
-        isBlock ? 'TRANSACTION BLOCKED' : 'TRANSACTION APPROVED',
-      );
-
-      // Score grid
-      showElement('scoreGrid', 'grid');
-      document.getElementById('scoreProb').textContent     = pct + '%';
-      document.getElementById('scoreProb').style.color     = isBlock ? 'var(--danger)' : 'var(--accent)';
-      document.getElementById('scoreDecision').textContent = data.action;
-      document.getElementById('scoreDecision').style.color = isBlock ? 'var(--danger)' : 'var(--accent)';
-      document.getElementById('scoreLatency').textContent  = (data.latency_ms ?? roundTrip) + ' ms';
-      document.getElementById('scoreLatency').style.color  = 'var(--warn)';
-
-      // Probability bar
-      showElement('probBarWrap', 'block');
-      document.getElementById('probPct').textContent            = pct + '%';
-      const fill = document.getElementById('probBarFill');
-      fill.style.background = isBlock ? 'var(--danger)' : 'var(--accent)';
-      requestAnimationFrame(() => { fill.style.width = pct + '%'; });
-
-    } catch (err) {
-      setVerdict('block', '❌', 'API CONNECTION FAILED');
-      appendLog(`Error: ${err.message}`, 'err');
-      appendLog('Ensure the FastAPI server is running on port 8500', 'inf');
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '<span class="btn-icon">▶</span>Execute Inference';
-    }
   }
 
   function setVerdict(type, icon, label) {
     const card = document.getElementById('verdictCard');
-    card.className = `verdict ${type}`;
-    card.style.display = 'block';
-    document.getElementById('verdictIcon').innerHTML = icon;
+    card.className        = `verdict ${type}`;
+    card.style.display    = 'block';
+    document.getElementById('verdictIcon').innerHTML  = icon;
     document.getElementById('verdictLabel').textContent = label;
   }
-</script>
 
+  // ── API config ────────────────────────────────────────────────
+  // Local:      'http://localhost:8500'
+  // Production: 'https://finsec-fraud-api.onrender.com'
+  // Same-origin (FastAPI serves this file): ''
+  const API_BASE = 'https://finsec-fraud-api.onrender.com';
+
+  // ── Main inference function ───────────────────────────────────
+  async function runInference() {
+    const btn     = document.getElementById('submitBtn');
+    const payload = document.getElementById('payloadData').value.trim();
+
+    // Step 1 — validate JSON before touching the UI
+    let txnData;
+    try {
+      txnData = JSON.parse(payload);
+    } catch {
+      const log = document.getElementById('logPanel');
+      log.innerHTML = '';
+      showEl('logPanel');
+      setVerdict('block', '❌', 'INVALID JSON');
+      appendLog('JSON parse error — fix the syntax and try again', 'err');
+      return;
+    }
+
+    // Step 2 — loading state
+    btn.disabled    = true;
+    btn.innerHTML   = '<span class="spinning btn-icon">⟳</span>Analyzing…';
+    document.getElementById('txnId').textContent = randomTxnId();
+
+    hideEl('idleState');
+    hideEl('scoreGrid');
+    hideEl('probBarWrap');
+
+    const log = document.getElementById('logPanel');
+    log.innerHTML = '';
+    showEl('logPanel');
+
+    setVerdict('loading', '<span class="spinning">⟳</span>', 'PROCESSING');
+    appendLog('Payload validated — dispatching to inference endpoint', 'inf');
+
+    try {
+      const t0  = performance.now();
+      const res = await fetch(`${API_BASE}/predict`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(txnData),
+      });
+      const roundTrip = (performance.now() - t0).toFixed(0);
+
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({ detail: res.statusText }));
+        throw new Error(errBody.detail || `HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      // ── Probability math ─────────────────────────────────────
+      // app.py returns fraud_probability as a true 0-to-1 value,
+      // e.g. 0.0081 = 0.81% chance of fraud, 0.8100 = 81.00%.
+      // Multiply by 100 to convert to a human percentage.
+      const rawProb  = data.fraud_probability;          // 0–1
+      const pctValue = rawProb * 100;                   // 0–100
+      const pctStr   = pctValue.toFixed(2) + '%';       // "81.00%"
+      const barWidth = Math.min(pctValue, 100);         // cap at 100 for the bar
+
+      const isBlock = data.action === 'BLOCK';
+
+      appendLog(`Response received — RTT ${roundTrip} ms`, 'inf');
+      appendLog(
+        `Fraud probability: ${pctStr}  |  Decision: ${data.action}`,
+        isBlock ? 'err' : 'ok'
+      );
+
+      // ── Verdict banner ────────────────────────────────────────
+      //   Approved  →  ✅  TRANSACTION APPROVED
+      //   Blocked   →  🚨  TRANSACTION NOT APPROVED
+      setVerdict(
+        isBlock ? 'block'   : 'approve',
+        isBlock ? '🚨'      : '✅',
+        isBlock ? 'TRANSACTION BLOCKED' : 'TRANSACTION APPROVED',
+      );
+
+      // ── Score cells ───────────────────────────────────────────
+      showEl('scoreGrid', 'grid');
+      document.getElementById('scoreProb').textContent      = pctStr;
+      document.getElementById('scoreProb').style.color      = isBlock ? 'var(--danger)' : 'var(--accent)';
+      document.getElementById('scoreDecision').textContent  = data.action;
+      document.getElementById('scoreDecision').style.color  = isBlock ? 'var(--danger)' : 'var(--accent)';
+      document.getElementById('scoreLatency').textContent   = (data.latency_ms ?? roundTrip) + ' ms';
+      document.getElementById('scoreLatency').style.color   = 'var(--warn)';
+
+      // ── Risk bar ──────────────────────────────────────────────
+      // Left  → "Fraud Risk Score"   (static label in HTML)
+      // Right → "81.00% — High Risk" or "0.81% — Low Risk"
+      showEl('probBarWrap', 'block');
+      document.getElementById('probPct').textContent =
+        `${pctStr} — ${isBlock ? 'High Risk' : 'Low Risk'}`;
+
+      const fill = document.getElementById('probBarFill');
+      fill.style.background = isBlock ? 'var(--danger)' : 'var(--accent)';
+
+      // Always reset to 0 first so the slide animation fires every time
+      fill.style.width = '0%';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          fill.style.width = barWidth + '%';
+        });
+      });
+
+    } catch (err) {
+      setVerdict('block', '❌', 'CONNECTION FAILED');
+      appendLog(`Error: ${err.message}`, 'err');
+      appendLog('Make sure python app.py is running on port 8500', 'inf');
+    } finally {
+      btn.disabled  = false;
+      btn.innerHTML = '<span class="btn-icon">▶</span>Execute Inference';
+    }
+  }
+</script>
 </body>
 </html>

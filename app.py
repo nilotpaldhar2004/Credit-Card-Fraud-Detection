@@ -222,12 +222,17 @@ async def predict_fraud(transaction: TransactionRequest):
         df = pd.DataFrame([transaction.model_dump()])[FEATURE_COLUMNS]
 
         fraud_probability = float(app_state.model.predict(df)[0])
+        # fraud_probability is a true 0-to-1 probability.
+        # 0.0081 means 0.81% chance of fraud.
+        # 0.8100 means 81.00% chance of fraud.
+        # The frontend multiplies by 100 to display as a percentage.
         is_fraud          = fraud_probability > FRAUD_THRESHOLD
         latency_ms        = (time.perf_counter() - t0) * 1000
 
         logger.info(
-            "Prediction complete | prob=%.4f | action=%s | latency=%.2fms",
+            "Prediction | prob=%.4f (%.2f%%) | action=%s | latency=%.2fms",
             fraud_probability,
+            fraud_probability * 100,
             "BLOCK" if is_fraud else "APPROVE",
             latency_ms,
         )
