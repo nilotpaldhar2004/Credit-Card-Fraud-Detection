@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Oxanium:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
-    /* ── Design Tokens ─────────────────────────────────────── */
+ 
     :root {
       --bg:          #06090d;
       --surface-1:   #0b0f14;
@@ -42,7 +42,7 @@
       --topbar-h:    58px;
     }
 
-    /* ── Reset ─────────────────────────────────────────────── */
+    
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
@@ -54,7 +54,7 @@
       overflow-x: hidden;
     }
 
-    /* Ambient noise texture */
+   
     body::before {
       content: '';
       position: fixed; inset: 0;
@@ -68,7 +68,7 @@
       z-index: 0;
     }
 
-    /* ── Layout Shell ───────────────────────────────────────── */
+   
     .app {
       display: flex;
       flex-direction: row;
@@ -77,7 +77,7 @@
       z-index: 1;
     }
 
-    /* ── Mobile Header ──────────────────────────────────────── */
+   
     .mobile-header {
       display: none;
       position: fixed;
@@ -130,7 +130,7 @@
     .hamburger.open span:nth-child(2) { opacity: 0; }
     .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-    /* Overlay */
+   
     .overlay {
       display: none;
       position: fixed; inset: 0;
@@ -140,7 +140,7 @@
     }
     .overlay.visible { display: block; }
 
-    /* ── Sidebar ───────────────────────────────────────────── */
+    
     .sidebar {
       width: var(--sidebar-w);
       flex-shrink: 0;
@@ -260,7 +260,7 @@
       100% { box-shadow: 0 0 0 0   rgba(0,220,140,0); }
     }
 
-    /* ── Main ──────────────────────────────────────────────── */
+  
     .main {
       flex: 1;
       display: flex;
@@ -270,7 +270,7 @@
       z-index: 5;
     }
 
-    /* Topbar */
+    
     .topbar {
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 28px;
@@ -303,7 +303,7 @@
     .badge-green { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--border-glow); }
     .badge-gray  { background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); }
 
-    /* ── Content ───────────────────────────────────────────── */
+   
     .content {
       flex: 1;
       overflow-y: auto;
@@ -315,7 +315,7 @@
       scrollbar-color: var(--surface-3) transparent;
     }
 
-    /* ── Metric Strip ──────────────────────────────────────── */
+   
     .metric-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -380,7 +380,7 @@
       margin-top: 6px;
     }
 
-    /* ── Panel Row ─────────────────────────────────────────── */
+   
     .panel-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -433,7 +433,7 @@
       gap: 14px;
     }
 
-    /* ── Meta Grid ─────────────────────────────────────────── */
+   
     .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .meta-item {
       background: var(--surface-2);
@@ -458,7 +458,7 @@
       font-weight: 600;
     }
 
-    /* ── Textarea ──────────────────────────────────────────── */
+   
     .code-label {
       font-family: var(--font-body);
       font-size: 9px;
@@ -497,7 +497,7 @@
       box-shadow: 0 0 0 3px rgba(0,220,140,0.07), inset 0 0 20px rgba(0,220,140,0.02);
     }
 
-    /* ── Button ────────────────────────────────────────────── */
+  
     .btn {
       display: flex; align-items: center; justify-content: center; gap: 9px;
       padding: 12px 22px;
@@ -533,7 +533,7 @@
     .btn-primary:active { transform: translateY(0); box-shadow: none; }
     .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    /* ── Result Zone ───────────────────────────────────────── */
+    
     .result-zone {
       flex: 1;
       display: flex;
@@ -569,7 +569,7 @@
       letter-spacing: 0.01em;
     }
 
-    /* Verdict card */
+    
     .verdict {
       display: none;
       border-radius: var(--radius);
@@ -601,7 +601,7 @@
     .block   .verdict-label { color: var(--danger); }
     .loading .verdict-label { color: var(--text-2); }
 
-    /* Score grid */
+    
     .score-grid {
       display: none;
       grid-template-columns: 1fr 1fr 1fr;
@@ -657,7 +657,6 @@
       transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
     }
 
-    /* Log panel */
     .log-panel {
       display: none;
       background: var(--bg);
@@ -683,7 +682,7 @@
     .log-msg.err { color: var(--danger); }
     .log-msg.inf { color: var(--text-2); }
 
-    /* ── Animations ─────────────────────────────────────────── */
+   
     @keyframes slide-up {
       from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -693,16 +692,12 @@
     }
     .spinning { display: inline-block; animation: spin 0.9s linear infinite; }
 
-    /* ── Scrollbar ───────────────────────────────────────────── */
+   
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 3px; }
 
-    /* ══════════════════════════════════════════════════════════
-       RESPONSIVE BREAKPOINTS
-    ══════════════════════════════════════════════════════════ */
-
-    /* ── Tablet ─────────────────────────────────────────────── */
+   
     @media (max-width: 1024px) {
       .metric-row {
         grid-template-columns: repeat(2, 1fr);
@@ -715,11 +710,11 @@
       }
     }
 
-    /* ── Mobile ─────────────────────────────────────────────── */
+    
     @media (max-width: 768px) {
       :root { --topbar-h: 56px; }
 
-      /* Show mobile header, hide sidebar */
+     
       .mobile-header { display: flex; }
       .overlay { display: none; }
 
@@ -775,7 +770,7 @@
       .topbar-badges .badge-gray { display: none; }
     }
 
-    /* ── Small Mobile ───────────────────────────────────────── */
+   
     @media (max-width: 400px) {
       .metric-row { grid-template-columns: 1fr 1fr; }
       .metric-value { font-size: 16px; }
@@ -786,7 +781,7 @@
 </head>
 <body>
 
-<!-- ─── Mobile Header ───────────────────────────────────────────── -->
+
 <div class="mobile-header">
   <div class="mobile-logo">
     <span class="shield-icon">🛡</span>FinSec Shield
@@ -796,13 +791,13 @@
   </div>
 </div>
 
-<!-- Overlay -->
+
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-<!-- ─── App Shell ────────────────────────────────────────────────── -->
+
 <div class="app">
 
-  <!-- Sidebar -->
+  
   <aside class="sidebar" id="sidebar">
     <div class="logo">
       <div class="logo-mark"><span class="shield">🛡</span>FinSec Shield</div>
@@ -822,10 +817,10 @@
     </div>
   </aside>
 
-  <!-- Main -->
+ 
   <main class="main">
 
-    <!-- Topbar (desktop only) -->
+   
     <div class="topbar">
       <div class="topbar-left">
         <div class="breadcrumb">inference / <span>live-scoring</span></div>
@@ -836,10 +831,10 @@
       </div>
     </div>
 
-    <!-- Content -->
+    
     <div class="content">
 
-      <!-- Metric strip -->
+      
       <div class="metric-row">
         <div class="metric-card green">
           <div class="metric-label">Model</div>
@@ -863,10 +858,10 @@
         </div>
       </div>
 
-      <!-- Panels -->
+      
       <div class="panel-row">
 
-        <!-- Input -->
+        
         <div class="panel">
           <div class="panel-header">
             <div class="panel-title"><span class="icon">📡</span>Incoming Payload</div>
@@ -907,7 +902,7 @@
           </div>
         </div>
 
-        <!-- Output -->
+        
         <div class="panel">
           <div class="panel-header">
             <div class="panel-title"><span class="icon">🤖</span>Decision Output</div>
@@ -957,14 +952,14 @@
           </div>
         </div>
 
-      </div><!-- end panel-row -->
+      </div>
 
-    </div><!-- end content -->
+    </div>
   </main>
-</div><!-- end app -->
+</div>
 
 <script>
-  // ── Sidebar (mobile) ──────────────────────────────────────────
+ 
   function toggleSidebar() {
     const sidebar   = document.getElementById('sidebar');
     const hamburger = document.getElementById('hamburger');
@@ -981,7 +976,7 @@
     document.body.style.overflow = '';
   }
 
-  // ── Small helpers ─────────────────────────────────────────────
+
   function nowTs() {
     return new Date().toLocaleTimeString('en-US', { hour12: false });
   }
@@ -1017,18 +1012,14 @@
     document.getElementById('verdictLabel').textContent = label;
   }
 
-  // ── API config ────────────────────────────────────────────────
-  // Local:      'http://localhost:8500'
-  // Production: 'https://finsec-fraud-api.onrender.com'
-  // Same-origin (FastAPI serves this file): ''
+  
   const API_BASE = 'https://finsec-fraud-api.onrender.com';
 
-  // ── Main inference function ───────────────────────────────────
   async function runInference() {
     const btn     = document.getElementById('submitBtn');
     const payload = document.getElementById('payloadData').value.trim();
 
-    // Step 1 — validate JSON before touching the UI
+   
     let txnData;
     try {
       txnData = JSON.parse(payload);
@@ -1041,7 +1032,7 @@
       return;
     }
 
-    // Step 2 — loading state
+   
     btn.disabled    = true;
     btn.innerHTML   = '<span class="spinning btn-icon">⟳</span>Analyzing…';
     document.getElementById('txnId').textContent = randomTxnId();
@@ -1073,14 +1064,11 @@
 
       const data = await res.json();
 
-      // ── Probability math ─────────────────────────────────────
-      // app.py returns fraud_probability as a true 0-to-1 value,
-      // e.g. 0.0081 = 0.81% chance of fraud, 0.8100 = 81.00%.
-      // Multiply by 100 to convert to a human percentage.
-      const rawProb  = data.fraud_probability;          // 0–1
-      const pctValue = rawProb * 100;                   // 0–100
-      const pctStr   = pctValue.toFixed(2) + '%';       // "81.00%"
-      const barWidth = Math.min(pctValue, 100);         // cap at 100 for the bar
+      
+      const rawProb  = data.fraud_probability;          
+      const pctValue = rawProb * 100;                   
+      const pctStr   = pctValue.toFixed(2) + '%';      
+      const barWidth = Math.min(pctValue, 100);         
 
       const isBlock = data.action === 'BLOCK';
 
@@ -1090,16 +1078,14 @@
         isBlock ? 'err' : 'ok'
       );
 
-      // ── Verdict banner ────────────────────────────────────────
-      //   Approved  →  ✅  TRANSACTION APPROVED
-      //   Blocked   →  🚨  TRANSACTION NOT APPROVED
+      
       setVerdict(
         isBlock ? 'block'   : 'approve',
         isBlock ? '🚨'      : '✅',
         isBlock ? 'TRANSACTION BLOCKED' : 'TRANSACTION APPROVED',
       );
 
-      // ── Score cells ───────────────────────────────────────────
+      
       showEl('scoreGrid', 'grid');
       document.getElementById('scoreProb').textContent      = pctStr;
       document.getElementById('scoreProb').style.color      = isBlock ? 'var(--danger)' : 'var(--accent)';
@@ -1108,9 +1094,7 @@
       document.getElementById('scoreLatency').textContent   = (data.latency_ms ?? roundTrip) + ' ms';
       document.getElementById('scoreLatency').style.color   = 'var(--warn)';
 
-      // ── Risk bar ──────────────────────────────────────────────
-      // Left  → "Fraud Risk Score"   (static label in HTML)
-      // Right → "81.00% — High Risk" or "0.81% — Low Risk"
+      
       showEl('probBarWrap', 'block');
       document.getElementById('probPct').textContent =
         `${pctStr} — ${isBlock ? 'High Risk' : 'Low Risk'}`;
@@ -1118,7 +1102,7 @@
       const fill = document.getElementById('probBarFill');
       fill.style.background = isBlock ? 'var(--danger)' : 'var(--accent)';
 
-      // Always reset to 0 first so the slide animation fires every time
+      
       fill.style.width = '0%';
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
