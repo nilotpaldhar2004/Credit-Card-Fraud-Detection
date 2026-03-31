@@ -1,12 +1,4 @@
-"""
-Credit Card Fraud Detection API
-================================
-A production-grade FastAPI service for real-time transaction fraud scoring
-using a pre-trained LightGBM model.
 
-Author  : Nilotpal Dhar
-Version : 2.0.0
-"""
 
 import os
 import logging
@@ -22,9 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field, field_validator
 
-# ---------------------------------------------------------------------------
-# Logging
-# ---------------------------------------------------------------------------
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
@@ -32,9 +22,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("fraud-api")
 
-# ---------------------------------------------------------------------------
-# Constants
-# ---------------------------------------------------------------------------
+
 MODEL_PATH = os.getenv("MODEL_PATH", "lightgbm_fraud_model.pkl")
 HOST       = os.getenv("HOST", "0.0.0.0")
 PORT       = int(os.getenv("PORT", 8500))
@@ -46,9 +34,7 @@ FEATURE_COLUMNS = (
     + ["Amount"]
 )
 
-# ---------------------------------------------------------------------------
-# Pydantic schema – strict validation keeps bad payloads out of the model
-# ---------------------------------------------------------------------------
+
 class TransactionRequest(BaseModel):
     """
     Represents a single credit-card transaction.
@@ -98,9 +84,7 @@ class HealthResponse(BaseModel):
     version:      str = "2.0.0"
 
 
-# ---------------------------------------------------------------------------
-# Application state (holds shared objects across requests)
-# ---------------------------------------------------------------------------
+
 class AppState:
     model: Any = None
     model_loaded: bool = False
@@ -109,9 +93,7 @@ class AppState:
 app_state = AppState()
 
 
-# ---------------------------------------------------------------------------
-# Lifespan – load model at startup, release at shutdown
-# ---------------------------------------------------------------------------
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Load the ML model once when the server starts."""
@@ -130,9 +112,7 @@ async def lifespan(app: FastAPI):
     logger.info("Server shutting down. Releasing resources.")
 
 
-# ---------------------------------------------------------------------------
-# FastAPI app
-# ---------------------------------------------------------------------------
+
 app = FastAPI(
     title="Credit Card Fraud Detection API",
     description=(
@@ -148,14 +128,12 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # tighten to specific origins in production
+    allow_origins=["*"],   
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
-# ---------------------------------------------------------------------------
-# Request timing middleware
-# ---------------------------------------------------------------------------
+
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     start = time.perf_counter()
@@ -165,9 +143,7 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 
-# ---------------------------------------------------------------------------
-# Routes
-# ---------------------------------------------------------------------------
+
 @app.get("/", include_in_schema=False)
 async def serve_frontend():
     """Serve the dashboard HTML file."""
@@ -218,14 +194,11 @@ async def predict_fraud(transaction: TransactionRequest):
     try:
         t0 = time.perf_counter()
 
-        # Build a correctly ordered DataFrame (feature order matters for tree models)
+        
         df = pd.DataFrame([transaction.model_dump()])[FEATURE_COLUMNS]
 
         fraud_probability = float(app_state.model.predict(df)[0])
-        # fraud_probability is a true 0-to-1 probability.
-        # 0.0081 means 0.81% chance of fraud.
-        # 0.8100 means 81.00% chance of fraud.
-        # The frontend multiplies by 100 to display as a percentage.
+        
         is_fraud          = fraud_probability > FRAUD_THRESHOLD
         latency_ms        = (time.perf_counter() - t0) * 1000
 
@@ -253,9 +226,7 @@ async def predict_fraud(transaction: TransactionRequest):
         ) from exc
 
 
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
+
 if __name__ == "__main__":
     logger.info("Starting server on %s:%d", HOST, PORT)
     uvicorn.run(
